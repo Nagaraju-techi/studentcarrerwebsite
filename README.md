@@ -130,19 +130,21 @@ http://localhost:3000
 ## 📁 Folder Structure
 studentwebsite/
 │
-├── src/
-│   ├── components/
-│   │   └── CareerWellnessWebsite.jsx
-│   ├── styles/
-│   │   └── CareerWellnessWebsite.css
-│   ├── App.js
-│   └── index.js
+├── src/ # Core source code
+│ ├── components/ # Reusable React components
+│ │ └── CareerWellnessWebsite.jsx # Main component for the website
+│ │
+│ ├── styles/ # CSS and styling files
+│ │ └── CareerWellnessWebsite.css # Styles for the main component
+│ │
+│ ├── App.js # Root React component
+│ └── index.js # Entry point of the application
 │
-├── public/
-│   └── index.html
+├── public/ # Static assets and base HTML
+│ └── index.html # Main HTML template
 │
-├── package.json
-└── README.md
+├── package.json # Project metadata and dependencies
+└── README.md # Project documentation
 
 ## 💡 Useful Commands
 Command	Description
