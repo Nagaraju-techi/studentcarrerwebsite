@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
@@ -157,4 +153,3 @@ npm install <package>	Installs a dependency
 
 # 🪪 License
 This project is licensed under the MIT License — feel free to modify and use it for learning or portfolio purposes.
->>>>>>> 3aabea2b39b85e73ef05d83a7aa16bcf4ae3fcb0
