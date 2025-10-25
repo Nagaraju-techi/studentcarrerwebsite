@@ -380,7 +380,7 @@ const CompanyPreparation = ({ onLogout }) => {
               <div className="resources-preview">
                 <h4 className="resources-title">
                   <FileText size={16} />
-                  Learning Resources
+                     <a href="https://drive.google.com/drive/folders/1K2Vpm5bKUXqWhxW81d1z529IJ1dP6X6l" target="main" style={{color: 'white',textDecoration:'NONE'}}>Learning Resources</a>
                 </h4>
                 <div className="resources-stats">
                   <div className="resource-stat">
