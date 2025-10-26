@@ -1,11 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { 
-  Save, 
-  Download, 
-  Eye, 
-  EyeOff, 
-  Plus, 
-  Trash2, 
+import {
+  Save,
+  Download,
+  Eye,
+  EyeOff,
+  Plus,
+  Trash2,
   FileText,
   Award,
   Briefcase,
@@ -18,7 +18,6 @@ import {
   Github,
   ChevronDown,
   ChevronUp,
-  Sparkles,
   RotateCcw,
   ArrowLeft,
   LogOut,
@@ -26,6 +25,8 @@ import {
   Code,
   BookOpen
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
 
 const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
   const [resume, setResume] = useState({
@@ -54,18 +55,27 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
     { id: 2, name: 'Modern', color: '#43e97b', selected: false },
     { id: 3, name: 'Creative', color: '#f093fb', selected: false }
   ]);
-  
-  const resumeRef = useRef(null);
 
-  const handleBackToDashboard = () => {
-    if (onBackToDashboard) {
-      onBackToDashboard();
-    }
-  };
+  const resumeRef = useRef(null);
+  const navigate = useNavigate();
+  
+ const navigateBackToDashboard = () => {
+   navigate('/dashboard');
+ };
+
+  // const handleBackToDashboard = () => {
+  //   if (onBackToDashboard) {
+  //     onBackToDashboard();
+  //   } else {
+  //     console.log('Back to Dashboard clicked - implement your navigation logic');
+  //   }
+  // };
 
   const handleLogout = () => {
     if (onLogout) {
       onLogout();
+    } else {
+      console.log('Logout clicked - implement your logout logic');
     }
   };
 
@@ -104,7 +114,7 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
   const updateItem = (section, index, field, value) => {
     setResume(prev => ({
       ...prev,
-      [section]: prev[section].map((item, i) => 
+      [section]: prev[section].map((item, i) =>
         i === index ? { ...item, [field]: value } : item
       )
     }));
@@ -201,9 +211,9 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
 
   const exportJSON = () => {
     const dataStr = JSON.stringify(resume, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
     const exportFileDefaultName = 'resume-data.json';
-    
+
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
@@ -259,7 +269,7 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
   const completionPercentage = calculateCompletion();
 
   const SectionHeader = ({ icon: Icon, title, count, isOpen, onToggle, onAdd }) => (
-    <div 
+    <div
       style={{
         padding: '16px',
         cursor: 'pointer',
@@ -268,10 +278,10 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
       }}
       onClick={onToggle}
     >
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center' 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Icon size={20} />
@@ -289,10 +299,10 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
           )}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <button 
-            onClick={(e) => { 
-              e.stopPropagation(); 
-              onAdd(); 
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onAdd();
             }}
             type="button"
             style={{
@@ -308,6 +318,689 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
             <Plus size={16} />
           </button>
           {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Form field components for each section
+  const ExperienceForm = ({ exp, index }) => (
+    <div style={{ padding: '16px', border: '1px solid #e2e8f0', borderRadius: '8px', marginBottom: '16px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+        <h4 style={{ margin: 0, fontSize: '14px', fontWeight: '600' }}>Experience #{index + 1}</h4>
+        <button
+          onClick={() => removeItem('experience', index)}
+          type="button"
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            color: '#ef4444',
+            padding: '4px'
+          }}
+        >
+          <Trash2 size={16} />
+        </button>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+              Company *
+            </label>
+            <input
+              type="text"
+              value={exp.company}
+              onChange={(e) => updateItem('experience', index, 'company', e.target.value)}
+              placeholder="Google"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+              Position *
+            </label>
+            <input
+              type="text"
+              value={exp.position}
+              onChange={(e) => updateItem('experience', index, 'position', e.target.value)}
+              placeholder="Senior Developer"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+              Start Date
+            </label>
+            <input
+              type="text"
+              value={exp.startDate}
+              onChange={(e) => updateItem('experience', index, 'startDate', e.target.value)}
+              placeholder="Jan 2020"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+              End Date
+            </label>
+            <input
+              type="text"
+              value={exp.endDate}
+              onChange={(e) => updateItem('experience', index, 'endDate', e.target.value)}
+              placeholder="Present"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+        </div>
+
+        <div>
+          <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+            Description
+          </label>
+          <textarea
+            value={exp.description}
+            onChange={(e) => updateItem('experience', index, 'description', e.target.value)}
+            placeholder="Describe your responsibilities and achievements..."
+            rows={3}
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              border: '1px solid #e2e8f0',
+              borderRadius: '6px',
+              fontSize: '14px',
+              resize: 'vertical'
+            }}
+          />
+        </div>
+
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <label style={{ fontSize: '12px', fontWeight: '500', color: '#475569' }}>
+              Key Achievements
+            </label>
+            <button
+              onClick={() => addAchievement(index)}
+              type="button"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 8px',
+                border: 'none',
+                borderRadius: '4px',
+                background: '#667eea',
+                color: 'white',
+                cursor: 'pointer',
+                fontSize: '12px'
+              }}
+            >
+              <Plus size={12} />
+              Add Achievement
+            </button>
+          </div>
+          {exp.achievements?.map((achievement, achIndex) => (
+            <div key={achIndex} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+              <input
+                type="text"
+                value={achievement}
+                onChange={(e) => updateAchievement(index, achIndex, e.target.value)}
+                placeholder="Achievement description..."
+                style={{
+                  flex: 1,
+                  padding: '8px 12px',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '6px',
+                  fontSize: '14px'
+                }}
+              />
+              <button
+                onClick={() => removeAchievement(index, achIndex)}
+                type="button"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#ef4444',
+                  padding: '8px'
+                }}
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const EducationForm = ({ edu, index }) => (
+    <div style={{ padding: '16px', border: '1px solid #e2e8f0', borderRadius: '8px', marginBottom: '16px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+        <h4 style={{ margin: 0, fontSize: '14px', fontWeight: '600' }}>Education #{index + 1}</h4>
+        <button
+          onClick={() => removeItem('education', index)}
+          type="button"
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            color: '#ef4444',
+            padding: '4px'
+          }}
+        >
+          <Trash2 size={16} />
+        </button>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div>
+          <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+            Institution *
+          </label>
+          <input
+            type="text"
+            value={edu.institution}
+            onChange={(e) => updateItem('education', index, 'institution', e.target.value)}
+            placeholder="University of Technology"
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              border: '1px solid #e2e8f0',
+              borderRadius: '6px',
+              fontSize: '14px'
+            }}
+          />
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+              Degree *
+            </label>
+            <input
+              type="text"
+              value={edu.degree}
+              onChange={(e) => updateItem('education', index, 'degree', e.target.value)}
+              placeholder="Bachelor of Science"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+              Field of Study
+            </label>
+            <input
+              type="text"
+              value={edu.field}
+              onChange={(e) => updateItem('education', index, 'field', e.target.value)}
+              placeholder="Computer Science"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+              Start Date
+            </label>
+            <input
+              type="text"
+              value={edu.startDate}
+              onChange={(e) => updateItem('education', index, 'startDate', e.target.value)}
+              placeholder="Aug 2016"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+              End Date
+            </label>
+            <input
+              type="text"
+              value={edu.endDate}
+              onChange={(e) => updateItem('education', index, 'endDate', e.target.value)}
+              placeholder="May 2020"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+              GPA
+            </label>
+            <input
+              type="text"
+              value={edu.gpa}
+              onChange={(e) => updateItem('education', index, 'gpa', e.target.value)}
+              placeholder="3.8/4.0"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+              Honors
+            </label>
+            <input
+              type="text"
+              value={edu.honors}
+              onChange={(e) => updateItem('education', index, 'honors', e.target.value)}
+              placeholder="Summa Cum Laude"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const SkillsForm = ({ skill, index }) => (
+    <div style={{ padding: '16px', border: '1px solid #e2e8f0', borderRadius: '8px', marginBottom: '16px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+        <h4 style={{ margin: 0, fontSize: '14px', fontWeight: '600' }}>Skill #{index + 1}</h4>
+        <button
+          onClick={() => removeItem('skills', index)}
+          type="button"
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            color: '#ef4444',
+            padding: '4px'
+          }}
+        >
+          <Trash2 size={16} />
+        </button>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div>
+          <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+            Skill Name *
+          </label>
+          <input
+            type="text"
+            value={skill.name}
+            onChange={(e) => updateItem('skills', index, 'name', e.target.value)}
+            placeholder="JavaScript"
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              border: '1px solid #e2e8f0',
+              borderRadius: '6px',
+              fontSize: '14px'
+            }}
+          />
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+              Category
+            </label>
+            <select
+              value={skill.category}
+              onChange={(e) => updateItem('skills', index, 'category', e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            >
+              <option value="Technical">Technical</option>
+              <option value="Soft Skills">Soft Skills</option>
+              <option value="Languages">Languages</option>
+              <option value="Tools">Tools</option>
+            </select>
+          </div>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+              Level
+            </label>
+            <select
+              value={skill.level}
+              onChange={(e) => updateItem('skills', index, 'level', e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            >
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+              <option value="Expert">Expert</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const ProjectsForm = ({ project, index }) => (
+    <div style={{ padding: '16px', border: '1px solid #e2e8f0', borderRadius: '8px', marginBottom: '16px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+        <h4 style={{ margin: 0, fontSize: '14px', fontWeight: '600' }}>Project #{index + 1}</h4>
+        <button
+          onClick={() => removeItem('projects', index)}
+          type="button"
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            color: '#ef4444',
+            padding: '4px'
+          }}
+        >
+          <Trash2 size={16} />
+        </button>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div>
+          <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+            Project Name *
+          </label>
+          <input
+            type="text"
+            value={project.name}
+            onChange={(e) => updateItem('projects', index, 'name', e.target.value)}
+            placeholder="E-commerce Website"
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              border: '1px solid #e2e8f0',
+              borderRadius: '6px',
+              fontSize: '14px'
+            }}
+          />
+        </div>
+
+        <div>
+          <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+            Description
+          </label>
+          <textarea
+            value={project.description}
+            onChange={(e) => updateItem('projects', index, 'description', e.target.value)}
+            placeholder="Describe the project and your role..."
+            rows={3}
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              border: '1px solid #e2e8f0',
+              borderRadius: '6px',
+              fontSize: '14px',
+              resize: 'vertical'
+            }}
+          />
+        </div>
+
+        <div>
+          <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+            Technologies Used
+          </label>
+          <input
+            type="text"
+            value={project.technologies}
+            onChange={(e) => updateItem('projects', index, 'technologies', e.target.value)}
+            placeholder="React, Node.js, MongoDB"
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              border: '1px solid #e2e8f0',
+              borderRadius: '6px',
+              fontSize: '14px'
+            }}
+          />
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+              Start Date
+            </label>
+            <input
+              type="text"
+              value={project.startDate}
+              onChange={(e) => updateItem('projects', index, 'startDate', e.target.value)}
+              placeholder="Jan 2023"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+              End Date
+            </label>
+            <input
+              type="text"
+              value={project.endDate}
+              onChange={(e) => updateItem('projects', index, 'endDate', e.target.value)}
+              placeholder="Mar 2023"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+        </div>
+
+        <div>
+          <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+            Project Link
+          </label>
+          <input
+            type="url"
+            value={project.link}
+            onChange={(e) => updateItem('projects', index, 'link', e.target.value)}
+            placeholder="https://github.com/username/project"
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              border: '1px solid #e2e8f0',
+              borderRadius: '6px',
+              fontSize: '14px'
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+
+  const CertificationsForm = ({ cert, index }) => (
+    <div style={{ padding: '16px', border: '1px solid #e2e8f0', borderRadius: '8px', marginBottom: '16px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+        <h4 style={{ margin: 0, fontSize: '14px', fontWeight: '600' }}>Certification #{index + 1}</h4>
+        <button
+          onClick={() => removeItem('certifications', index)}
+          type="button"
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            color: '#ef4444',
+            padding: '4px'
+          }}
+        >
+          <Trash2 size={16} />
+        </button>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div>
+          <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+            Certification Name *
+          </label>
+          <input
+            type="text"
+            value={cert.name}
+            onChange={(e) => updateItem('certifications', index, 'name', e.target.value)}
+            placeholder="AWS Certified Developer"
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              border: '1px solid #e2e8f0',
+              borderRadius: '6px',
+              fontSize: '14px'
+            }}
+          />
+        </div>
+
+        <div>
+          <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+            Issuing Organization
+          </label>
+          <input
+            type="text"
+            value={cert.issuer}
+            onChange={(e) => updateItem('certifications', index, 'issuer', e.target.value)}
+            placeholder="Amazon Web Services"
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              border: '1px solid #e2e8f0',
+              borderRadius: '6px',
+              fontSize: '14px'
+            }}
+          />
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+              Issue Date
+            </label>
+            <input
+              type="text"
+              value={cert.date}
+              onChange={(e) => updateItem('certifications', index, 'date', e.target.value)}
+              placeholder="Jun 2023"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+              Expiry Date
+            </label>
+            <input
+              type="text"
+              value={cert.expiryDate}
+              onChange={(e) => updateItem('certifications', index, 'expiryDate', e.target.value)}
+              placeholder="Jun 2026"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+        </div>
+
+        <div>
+          <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', marginBottom: '4px', color: '#475569' }}>
+            Credential URL
+          </label>
+          <input
+            type="url"
+            value={cert.link}
+            onChange={(e) => updateItem('certifications', index, 'link', e.target.value)}
+            placeholder="https://www.credly.com/users/username/badges"
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              border: '1px solid #e2e8f0',
+              borderRadius: '6px',
+              fontSize: '14px'
+            }}
+          />
         </div>
       </div>
     </div>
@@ -334,8 +1027,8 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
           gap: '16px'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap' }}>
-            <button 
-              onClick={handleBackToDashboard} 
+            <button
+              onClick={navigateBackToDashboard}
               type="button"
               style={{
                 display: 'flex',
@@ -368,7 +1061,7 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
             </div>
           </div>
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
-            <button 
+            <button
               onClick={() => setPreviewMode(!previewMode)}
               type="button"
               style={{
@@ -387,8 +1080,8 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
               {previewMode ? <EyeOff size={20} /> : <Eye size={20} />}
               {previewMode ? 'Edit Mode' : 'Preview Mode'}
             </button>
-            <button 
-              onClick={downloadPDF} 
+            <button
+              onClick={downloadPDF}
               type="button"
               style={{
                 display: 'flex',
@@ -407,8 +1100,8 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
               <Download size={20} />
               Export PDF
             </button>
-            <button 
-              onClick={exportJSON} 
+            <button
+              onClick={exportJSON}
               type="button"
               style={{
                 display: 'flex',
@@ -427,8 +1120,8 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
               <Save size={20} />
               Save JSON
             </button>
-            <button 
-              onClick={resetResume} 
+            <button
+              onClick={resetResume}
               type="button"
               style={{
                 padding: '8px',
@@ -442,8 +1135,8 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
             >
               <RotateCcw size={20} />
             </button>
-            <button 
-              onClick={handleLogout} 
+            <button
+              onClick={handleLogout}
               type="button"
               style={{
                 display: 'flex',
@@ -525,7 +1218,7 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
                   count={0}
                   isOpen={activeSection === 'personal'}
                   onToggle={() => setActiveSection(activeSection === 'personal' ? '' : 'personal')}
-                  onAdd={() => {}}
+                  onAdd={() => { }}
                 />
                 {activeSection === 'personal' && (
                   <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -695,7 +1388,7 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
                   count={resume.summary ? 1 : 0}
                   isOpen={activeSection === 'summary'}
                   onToggle={() => setActiveSection(activeSection === 'summary' ? '' : 'summary')}
-                  onAdd={() => {}}
+                  onAdd={() => { }}
                 />
                 {activeSection === 'summary' && (
                   <div style={{ padding: '16px' }}>
@@ -746,7 +1439,7 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
                         <p style={{ color: '#64748b', marginBottom: '16px', fontSize: '14px' }}>
                           No work experience added yet
                         </p>
-                        <button 
+                        <button
                           onClick={() => addItem('experience')}
                           type="button"
                           style={{
@@ -768,9 +1461,31 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
                         </button>
                       </div>
                     ) : (
-                      <p style={{ color: '#64748b', fontSize: '14px', margin: 0 }}>
-                        {resume.experience.length} experience{resume.experience.length !== 1 ? 's' : ''} added
-                      </p>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {resume.experience.map((exp, index) => (
+                          <ExperienceForm key={index} exp={exp} index={index} />
+                        ))}
+                        <button
+                          onClick={() => addItem('experience')}
+                          type="button"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '12px 16px',
+                            border: '1px dashed #e2e8f0',
+                            borderRadius: '6px',
+                            background: 'white',
+                            cursor: 'pointer',
+                            fontWeight: '500',
+                            fontSize: '14px',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          <Plus size={20} />
+                          Add Another Experience
+                        </button>
+                      </div>
                     )}
                   </div>
                 )}
@@ -786,6 +1501,66 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
                   onToggle={() => setActiveSection(activeSection === 'education' ? '' : 'education')}
                   onAdd={() => addItem('education')}
                 />
+                {activeSection === 'education' && (
+                  <div style={{ padding: '16px' }}>
+                    {resume.education.length === 0 ? (
+                      <div style={{ textAlign: 'center', padding: '32px 16px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+                          <GraduationCap size={48} color="#cbd5e1" />
+                        </div>
+                        <p style={{ color: '#64748b', marginBottom: '16px', fontSize: '14px' }}>
+                          No education added yet
+                        </p>
+                        <button
+                          onClick={() => addItem('education')}
+                          type="button"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '8px 16px',
+                            border: 'none',
+                            borderRadius: '6px',
+                            background: '#667eea',
+                            color: 'white',
+                            cursor: 'pointer',
+                            fontWeight: '500',
+                            fontSize: '14px'
+                          }}
+                        >
+                          <Plus size={20} />
+                          Add First Education
+                        </button>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {resume.education.map((edu, index) => (
+                          <EducationForm key={index} edu={edu} index={index} />
+                        ))}
+                        <button
+                          onClick={() => addItem('education')}
+                          type="button"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '12px 16px',
+                            border: '1px dashed #e2e8f0',
+                            borderRadius: '6px',
+                            background: 'white',
+                            cursor: 'pointer',
+                            fontWeight: '500',
+                            fontSize: '14px',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          <Plus size={20} />
+                          Add Another Education
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Skills */}
@@ -798,6 +1573,66 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
                   onToggle={() => setActiveSection(activeSection === 'skills' ? '' : 'skills')}
                   onAdd={() => addItem('skills')}
                 />
+                {activeSection === 'skills' && (
+                  <div style={{ padding: '16px' }}>
+                    {resume.skills.length === 0 ? (
+                      <div style={{ textAlign: 'center', padding: '32px 16px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+                          <Award size={48} color="#cbd5e1" />
+                        </div>
+                        <p style={{ color: '#64748b', marginBottom: '16px', fontSize: '14px' }}>
+                          No skills added yet
+                        </p>
+                        <button
+                          onClick={() => addItem('skills')}
+                          type="button"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '8px 16px',
+                            border: 'none',
+                            borderRadius: '6px',
+                            background: '#667eea',
+                            color: 'white',
+                            cursor: 'pointer',
+                            fontWeight: '500',
+                            fontSize: '14px'
+                          }}
+                        >
+                          <Plus size={20} />
+                          Add First Skill
+                        </button>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {resume.skills.map((skill, index) => (
+                          <SkillsForm key={index} skill={skill} index={index} />
+                        ))}
+                        <button
+                          onClick={() => addItem('skills')}
+                          type="button"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '12px 16px',
+                            border: '1px dashed #e2e8f0',
+                            borderRadius: '6px',
+                            background: 'white',
+                            cursor: 'pointer',
+                            fontWeight: '500',
+                            fontSize: '14px',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          <Plus size={20} />
+                          Add Another Skill
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Projects */}
@@ -810,6 +1645,66 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
                   onToggle={() => setActiveSection(activeSection === 'projects' ? '' : 'projects')}
                   onAdd={() => addItem('projects')}
                 />
+                {activeSection === 'projects' && (
+                  <div style={{ padding: '16px' }}>
+                    {resume.projects.length === 0 ? (
+                      <div style={{ textAlign: 'center', padding: '32px 16px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+                          <Code size={48} color="#cbd5e1" />
+                        </div>
+                        <p style={{ color: '#64748b', marginBottom: '16px', fontSize: '14px' }}>
+                          No projects added yet
+                        </p>
+                        <button
+                          onClick={() => addItem('projects')}
+                          type="button"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '8px 16px',
+                            border: 'none',
+                            borderRadius: '6px',
+                            background: '#667eea',
+                            color: 'white',
+                            cursor: 'pointer',
+                            fontWeight: '500',
+                            fontSize: '14px'
+                          }}
+                        >
+                          <Plus size={20} />
+                          Add First Project
+                        </button>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {resume.projects.map((project, index) => (
+                          <ProjectsForm key={index} project={project} index={index} />
+                        ))}
+                        <button
+                          onClick={() => addItem('projects')}
+                          type="button"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '12px 16px',
+                            border: '1px dashed #e2e8f0',
+                            borderRadius: '6px',
+                            background: 'white',
+                            cursor: 'pointer',
+                            fontWeight: '500',
+                            fontSize: '14px',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          <Plus size={20} />
+                          Add Another Project
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Certifications */}
@@ -822,6 +1717,66 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
                   onToggle={() => setActiveSection(activeSection === 'certifications' ? '' : 'certifications')}
                   onAdd={() => addItem('certifications')}
                 />
+                {activeSection === 'certifications' && (
+                  <div style={{ padding: '16px' }}>
+                    {resume.certifications.length === 0 ? (
+                      <div style={{ textAlign: 'center', padding: '32px 16px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+                          <BookOpen size={48} color="#cbd5e1" />
+                        </div>
+                        <p style={{ color: '#64748b', marginBottom: '16px', fontSize: '14px' }}>
+                          No certifications added yet
+                        </p>
+                        <button
+                          onClick={() => addItem('certifications')}
+                          type="button"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '8px 16px',
+                            border: 'none',
+                            borderRadius: '6px',
+                            background: '#667eea',
+                            color: 'white',
+                            cursor: 'pointer',
+                            fontWeight: '500',
+                            fontSize: '14px'
+                          }}
+                        >
+                          <Plus size={20} />
+                          Add First Certification
+                        </button>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {resume.certifications.map((cert, index) => (
+                          <CertificationsForm key={index} cert={cert} index={index} />
+                        ))}
+                        <button
+                          onClick={() => addItem('certifications')}
+                          type="button"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '12px 16px',
+                            border: '1px dashed #e2e8f0',
+                            borderRadius: '6px',
+                            background: 'white',
+                            cursor: 'pointer',
+                            fontWeight: '500',
+                            fontSize: '14px',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          <Plus size={20} />
+                          Add Another Certification
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -838,26 +1793,26 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
           <div>
             {/* Header */}
             <div style={{ marginBottom: '32px', borderBottom: '2px solid #e2e8f0', paddingBottom: '24px' }}>
-              <h1 style={{ 
-                fontSize: '36px', 
-                fontWeight: '700', 
+              <h1 style={{
+                fontSize: '36px',
+                fontWeight: '700',
                 margin: '0 0 8px 0',
                 color: '#1e293b'
               }}>
                 {resume.personalInfo.firstName || 'Your Name'} {resume.personalInfo.lastName}
               </h1>
               {resume.summary && (
-                <p style={{ 
-                  fontSize: '16px', 
+                <p style={{
+                  fontSize: '16px',
                   color: '#475569',
                   margin: '8px 0 16px 0'
                 }}>
                   {resume.summary.split('.')[0]}.
                 </p>
               )}
-              <div style={{ 
-                display: 'flex', 
-                flexWrap: 'wrap', 
+              <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
                 gap: '16px',
                 fontSize: '14px',
                 color: '#64748b'
@@ -868,7 +1823,7 @@ const ResumeBuilder = ({ onLogout, onBackToDashboard }) => {
                     <span>{resume.personalInfo.email}</span>
                   </div>
                 )}
-                                {resume.personalInfo.phone && (
+                {resume.personalInfo.phone && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <Phone size={14} />
                     <span>{resume.personalInfo.phone}</span>
